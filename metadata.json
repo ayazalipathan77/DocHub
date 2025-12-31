@@ -1,0 +1,5 @@
+{
+  "name": "DocuHub AI",
+  "description": "Enterprise documentation management system with AI-powered search, automated tagging, and .docx viewing capabilities.",
+  "requestFramePermissions": []
+}
