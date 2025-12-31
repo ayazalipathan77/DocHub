@@ -1,6 +1,6 @@
 import mammoth from 'mammoth';
 
-export const parseDocx = async (file: File): Promise<{ html: string; rawText: string }> => {
+export const parseDocx = async (file: File): Promise<{ rawText: string; fileData: string }> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
@@ -12,15 +12,21 @@ export const parseDocx = async (file: File): Promise<{ html: string; rawText: st
           return;
         }
 
-        // Convert to HTML for viewing
-        const htmlResult = await mammoth.convertToHtml({ arrayBuffer });
-        
-        // Extract raw text for indexing/AI
+        // 1. Get Raw Text for AI indexing (using mammoth)
         const textResult = await mammoth.extractRawText({ arrayBuffer });
+        
+        // 2. Convert ArrayBuffer to Base64 for storage and faithful rendering later
+        let binary = '';
+        const bytes = new Uint8Array(arrayBuffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        const base64 = window.btoa(binary);
 
         resolve({
-          html: htmlResult.value,
-          rawText: textResult.value
+          rawText: textResult.value,
+          fileData: base64
         });
       } catch (error) {
         reject(error);

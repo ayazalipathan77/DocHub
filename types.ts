@@ -13,7 +13,8 @@ export interface DocumentMeta {
 }
 
 export interface DocumentData extends DocumentMeta {
-  contentHtml: string; // The HTML representation for viewing
+  contentHtml?: string; // Fallback for legacy/mock data
+  fileData?: string;    // Base64 encoded DOCX file
   rawText: string;     // The raw text for AI search/indexing
 }
 

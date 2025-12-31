@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useDocuments } from '../context/DocumentContext';
 import { CATEGORIES, DEPARTMENTS } from '../constants';
-import { DocCategory } from '../types';
+import { DocCategory, DocumentData } from '../types';
 import { parseDocx } from '../utils/fileParser';
 import { analyzeDocument } from '../services/geminiService';
 import { UploadCloud, CheckCircle, X, Loader2, FileType } from 'lucide-react';
@@ -50,16 +50,16 @@ export const Upload: React.FC = () => {
 
     setLoading(true);
     try {
-      const { html, rawText } = await parseDocx(file);
+      const { rawText, fileData } = await parseDocx(file);
       
-      const newDoc = {
+      const newDoc: DocumentData = {
         id: crypto.randomUUID(),
         ...meta,
         uploadDate: new Date().toISOString(),
         tags: aiAnalysis ? aiAnalysis.tags : [],
         summary: aiAnalysis ? aiAnalysis.summary : undefined,
-        contentHtml: html,
-        rawText: rawText
+        rawText: rawText,
+        fileData: fileData // Store the base64 file data
       };
 
       addDocument(newDoc);
